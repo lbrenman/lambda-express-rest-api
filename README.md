@@ -263,7 +263,9 @@ and tag your image:
 
 Add Axios support to make external API calls to REST API's. In this example, we'll call the [NASA](https://api.nasa.gov/) Astronomy Picture of the Day API.
 
-* npm i axios
+* Add axios npm
+
+    `npm i axios`
 
 * Add an Axios import to app.mjs
 
@@ -286,16 +288,80 @@ Add Axios support to make external API calls to REST API's. In this example, we'
     curl --location 'http://localhost:3000/apod' --header 'Content-Type: application/json'
     ```
 
-with response:
+    with response:
+
+        ```json
+        {
+            "date": "2025-04-21",
+            "explanation": "Is this one galaxy or two? Although it looks like one, the answer is two. One path to this happening is when a small galaxy collides with a larger galaxy and ends up in the center. But in the featured image, something more rare is going on. Here, the central light-colored elliptical galaxy is much closer than the blue and red-colored spiral galaxy that surrounds it. This can happen when near and far galaxies are exactly aligned, causing the gravity of the near galaxy to pull the light from the far galaxy around it in an effect called gravitational lensing. The featured galaxy double was taken by the Webb Space Telescope and shows a complete Einstein ring, with great detail visible for both galaxies.  Galaxy lenses like this can reveal new information about the mass distribution of the foreground lens and the light distribution of the background source.",
+            "hdurl": "https://apod.nasa.gov/apod/image/2504/GalaxiesLens_Webb_1146.jpg",
+            "media_type": "image",
+            "service_version": "v1",
+            "title": "Galaxy Lenses Galaxy from Webb",
+            "url": "https://apod.nasa.gov/apod/image/2504/GalaxiesLens_Webb_960.jpg"
+        }
+        ```
+
+## Add AWS Support
+
+In this example, we'll add an AWS Translate method.
+
+* Add @aws-sdk/client-translate npm
+    
+    `npm i @aws-sdk/client-translate`
+
+* Add an @aws-sdk/client-translate import to app.mjs and declare a client
+
+    ```js
+    import { TranslateClient, TranslateTextCommand } from "@aws-sdk/client-translate";
+    const client = new TranslateClient({ region: "us-east-1" });
+    ```
+
+* Add a new route to app.mjs
+
+    ```js
+    app.get('/translate', async (req, res) => {
+        const input = {
+            Text: req.query.text,
+            SourceLanguageCode: req.query.sourcelanguage,
+            TargetLanguageCode: req.query.targetlanguage,
+            Settings: {
+                Formality: "INFORMAL",
+                Profanity: "MASK",
+                Brevity: "ON",
+            }
+        };
+        const command = new TranslateTextCommand(input);
+        const ttResponse = await client.send(command);
+
+        const response = {
+            "SourceText": input.Text,
+            "SourceLanguageCode": ttResponse.SourceLanguageCode,
+            "TargetLanguageCode": ttResponse.TargetLanguageCode,
+            "TranslatedText": ttResponse.TranslatedText
+        }
+        res.json(response);
+    });
+    ```
+* Test locally
+
+    ``` bash
+    curl --location 'http://localhost:3000/translate?text=Hello&sourcelanguage=en&targetlanguage=ja' --header 'Content-Type: application/json'
+    ```
+
+    with response:
 
     ```json
     {
-        "date": "2025-04-21",
-        "explanation": "Is this one galaxy or two? Although it looks like one, the answer is two. One path to this happening is when a small galaxy collides with a larger galaxy and ends up in the center. But in the featured image, something more rare is going on. Here, the central light-colored elliptical galaxy is much closer than the blue and red-colored spiral galaxy that surrounds it. This can happen when near and far galaxies are exactly aligned, causing the gravity of the near galaxy to pull the light from the far galaxy around it in an effect called gravitational lensing. The featured galaxy double was taken by the Webb Space Telescope and shows a complete Einstein ring, with great detail visible for both galaxies.  Galaxy lenses like this can reveal new information about the mass distribution of the foreground lens and the light distribution of the background source.",
-        "hdurl": "https://apod.nasa.gov/apod/image/2504/GalaxiesLens_Webb_1146.jpg",
-        "media_type": "image",
-        "service_version": "v1",
-        "title": "Galaxy Lenses Galaxy from Webb",
-        "url": "https://apod.nasa.gov/apod/image/2504/GalaxiesLens_Webb_960.jpg"
+        "SourceText": "Hello",
+        "SourceLanguageCode": "en",
+        "TargetLanguageCode": "ja",
+        "TranslatedText": "こんにちは"
     }
     ```
+
+* When you deploy to Lambda make sure your Service Role supports `Translate: TranslateText`
+
+    ![Imgur](https://i.imgur.com/kKznCIn.png)
+    ![Imgur](https://i.imgur.com/MyGx2A1.png)
+    ![Imgur](https://i.imgur.com/J7EB13B.png)
