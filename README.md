@@ -222,7 +222,11 @@ docker buildx build --platform linux/amd64 -t lambda-express-rest-api-docker .
 
 * Tag the image
 
-ECR_URL=<aws_account_id>.dkr.ecr.<region>.amazonaws.com/<repository_name>
+Create a local environment variable as follows:
+
+    `ECR_URL=<aws_account_id>.dkr.ecr.<region>.amazonaws.com/<repository_name>`
+
+and tag your image:
 
 ```bash
 ECR_URL=411427429079.dkr.ecr.us-east-1.amazonaws.com/lambda-express-rest-api-docker
