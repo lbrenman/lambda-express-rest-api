@@ -118,7 +118,9 @@ This test app implements a NodeJS REST API for running in Lambda that can also b
     }
     ```
 
-* Create an index.mjs Lambda Handler file: 
+## Deploy to Lambda
+
+* Create an index.mjs Lambda Handler file:
 
     ```js
     import serverless from 'serverless-http';
@@ -126,8 +128,6 @@ This test app implements a NodeJS REST API for running in Lambda that can also b
 
     export const handler = serverless(app);
     ```
-
-## Deploy to Lambda
 
 * Create a zip archive of your files:
     `zip -r deployment.zip node_modules app.mjs index.mjs package.json`
@@ -170,12 +170,6 @@ This test app implements a NodeJS REST API for running in Lambda that can also b
 
     ```bash
     curl 'https://hrgxowogjitvuh4rxp24jouweu0svrhz.lambda-url.us-east-1.on.aws/async' --header 'Content-Type: application/json'
-    ```
-    with response:
-    ```json
-    {
-        "message": "Async operation completed"
-    }
     ```
 
     with same responses as before
