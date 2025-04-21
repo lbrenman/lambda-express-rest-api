@@ -1,11 +1,6 @@
 # README
 
-This test app implements a NodeJS REST API for running in Lambda that can also be tested locally. It uses the express and serverless-http node packaged modules.
-
-Links:
-* https://www.freecodecamp.org/news/serverless-architecture-with-aws-lambda/
-
-You can find the files below in the Github repo: [https://github.com/lbrenman/lambda-express-rest-api](https://github.com/lbrenman/lambda-express-rest-api)
+This test app implements a NodeJS REST API for running in Lambda that can also be tested locally. It uses the express and serverless-http node packaged modules. This is based on the [excellent tutorial](https://www.freecodecamp.org/news/serverless-architecture-with-aws-lambda/).
 
 ## Create App Locally
 
